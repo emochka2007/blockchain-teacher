@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model subjects {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  lessons lessons[]
+
+  @@map("subjects")
+}
+
+model lessons {
+  id          String   @id @default(uuid()) @db.Uuid
+  subject_id  String   @db.Uuid
+  topic String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  subject subjects @relation(fields: [subject_id], references: [id])
+  practices   practices[]
+  homeworks   homeworks[]
+  lessonPages lesson_pages[]
+
+  lessonProgress lesson_progress[]
+
+  @@map("lessons")
+}
+
+model lesson_pages {
+  id         String   @id @default(uuid()) @db.Uuid
+  content    String   @db.Text
+  lesson_id  String   @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  lesson lessons @relation(fields: [lesson_id], references: [id])
+
+  @@index([lesson_id])
+  @@map("lesson_pages")
+}
+
+model practices {
+  id         String   @id @default(uuid()) @db.Uuid
+  lesson_id  String   @db.Uuid
+  name  String
+  content    String   @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  lesson lessons @relation(fields: [lesson_id], references: [id])
+
+  @@index([lesson_id])
+  @@map("practices")
+}
+
+model homeworks {
+  id            String   @id @default(uuid()) @db.Uuid
+  lesson_id     String   @db.Uuid
+  name String
+  content       String   @db.Text
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  lesson lessons @relation(fields: [lesson_id], references: [id])
+
+  @@index([lesson_id])
+  @@map("homeworks")
+}
+
+model users {
+  id         String   @id @default(uuid()) @db.Uuid
+  username   String   @db.VarChar(255)
+  role       String   @db.VarChar(100)
+  created_at DateTime @default(now())
+
+  lessonProgress lesson_progress[]
+
+  @@map("users")
+}
+
+model lesson_progress {
+  user_id   String @db.Uuid
+  lesson_id String @db.Uuid
+  progress  String @db.VarChar(16)
+
+  user   users   @relation(fields: [user_id], references: [id])
+  lesson lessons @relation(fields: [lesson_id], references: [id])
+
+  @@id([user_id, lesson_id])
+  @@index([lesson_id])
+  @@index([user_id])
+  @@map("lesson_progress")
+}

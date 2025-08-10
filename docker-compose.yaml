@@ -1,0 +1,11 @@
+services:
+  postgres_db:
+    image: postgres
+    shm_size: 128mb
+    restart: always
+    ports:
+      - "5430:5432"
+    environment:
+      - POSTGRES_DB=self_taught
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
