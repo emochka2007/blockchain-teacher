@@ -1,0 +1,12 @@
+= Practice Problems — Types of Numbers
+
+Solve each problem without referring to the lesson notes.
+
+. Write the number type(s) that stem:[-\frac{7}{4}] belongs to.
+. Which number is irrational?
+a) stem:[0.125]
+b) stem:[2\pi]
+c) stem:[\frac{15}{3}]
+. Give two real-life examples where integers are used, one involving negative numbers.
+. Identify the number type of stem:[\sqrt{81}] and explain why.
+. Express stem:[\frac{7}{6}] as a decimal and classify it as terminating or repeating.

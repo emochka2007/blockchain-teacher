@@ -5,7 +5,6 @@ import { SubjectService } from './subject/subject.service';
 import { SubjectModule } from './subject/subject.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LessonsModule } from './lessons/lessons.module';
-import { LessonPageModule } from './lesson_page/lesson_page.module';
 import { PracticeModule } from './practice/practice.module';
 import { HomeworkModule } from './homework/homework.module';
 import { UserModule } from './user/user.module';
@@ -15,7 +14,6 @@ import { UserModule } from './user/user.module';
     SubjectModule,
     PrismaModule,
     LessonsModule,
-    LessonPageModule,
     PracticeModule,
     HomeworkModule,
     UserModule,

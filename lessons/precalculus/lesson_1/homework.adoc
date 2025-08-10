@@ -1,0 +1,11 @@
+= Homework — Types of Numbers
+
+These problems require deeper application and reasoning.
+
+. A carpenter cuts a plank to a length of stem:[\sqrt{5}] meters.
+- Classify this number and explain why it belongs in that category.
+. Consider the complex number stem:[5 - 2i].
+- Explain the role of the real and imaginary parts in an engineering context.
+. Create a diagram that shows the relationships among natural, whole, integer, rational, irrational, real, and complex numbers.
+. A scientist measures the speed of light as 299,792,458 m/s.
+- Discuss whether this value is rational or irrational, and justify your reasoning.

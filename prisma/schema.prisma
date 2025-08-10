@@ -34,23 +34,10 @@ model lessons {
   subject subjects @relation(fields: [subject_id], references: [id])
   practices   practices[]
   homeworks   homeworks[]
-  lessonPages lesson_pages[]
 
   lessonProgress lesson_progress[]
 
   @@map("lessons")
-}
-
-model lesson_pages {
-  id         String   @id @default(uuid()) @db.Uuid
-  content    String   @db.Text
-  lesson_id  String   @db.Uuid
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  lesson lessons @relation(fields: [lesson_id], references: [id])
-
-  @@index([lesson_id])
-  @@map("lesson_pages")
 }
 
 model practices {

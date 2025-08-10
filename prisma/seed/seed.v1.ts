@@ -21,16 +21,6 @@ async function createLessonWithChildren(args: {
     },
   });
 
-  // lesson_pages
-  for (const pageContent of args.pages) {
-    await prisma.lesson_pages.create({
-      data: {
-        lesson_id: lesson.id,
-        content: pageContent,
-      },
-    });
-  }
-
   // practices
   for (const p of args.practices) {
     await prisma.practices.create({
@@ -60,7 +50,6 @@ async function main() {
   // ---------- Optional: clean start for idempotent seeding ----------
   await prisma.$transaction([
     prisma.lesson_progress.deleteMany(),
-    prisma.lesson_pages.deleteMany(),
     prisma.practices.deleteMany(),
     prisma.homeworks.deleteMany(),
     prisma.lessons.deleteMany(),

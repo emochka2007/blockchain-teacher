@@ -1,0 +1,110 @@
+= Pre-Calculus Lesson: Types of Numbers
+
+This lesson explores different types of numbers in a step-by-step, example-driven way.
+We'll move from simple counting numbers to more complex forms like irrational and complex numbers, always with real-life connections.
+
+== 1. Natural Numbers (Counting Numbers)
+
+*Example 1: Counting Physical Objects*
+Imagine a stack of 7 books. If we count them:
+
+stem:[1, 2, 3, 4, 5, 6, 7]
+
+We are using *natural numbers*.
+These numbers are used for *counting only positive quantities*.
+
+== 2. Whole Numbers (Natural Numbers + Zero)
+
+*Example 2: Counting and "Nothing"*
+If a store has 0 apples left, you can still represent this with a number:
+
+stem:[0, 1, 2, 3, \dots]
+
+Zero allows us to show the *absence* of something.
+
+== 3. Integers (Whole Numbers + Negatives)
+
+*Example 3: Elevator Floors*
+Imagine an elevator in a hotel that goes from basement levels to rooftop floors:
+
+stem:[\dots, -3, -2, -1, 0, 1, 2, 3, \dots]
+
+- Negative floors: basement levels.
+- Zero: ground floor.
+- Positive floors: above ground.
+
+== 4. Rational Numbers (Fractions and Terminating/Repeating Decimals)
+
+*Example 4: Dividing a Pizza*
+If you cut a pizza into 8 slices and take 3, you’ve taken:
+
+stem:[\frac{3}{8}]
+
+Written as a decimal:
+stem:[0.375] — a terminating decimal.
+
+*Example 5: Repeating Decimals*
+If you take 1 slice out of 3 equal slices:
+
+stem:[\frac{1}{3} = 0.333\ldots]
+
+The **3 repeats forever**.
+
+== 5. Irrational Numbers (Non-Terminating, Non-Repeating Decimals)
+
+*Example 6: Diagonal of a Square*
+Take a square with sides of length 1 unit. The diagonal length is:
+
+stem:[\sqrt{2} \approx 1.4142135\ldots]
+
+It goes on forever *without repeating*.
+
+*Real-Life Connection:* This occurs in construction when measuring non-square lengths.
+
+== 6. Real Numbers
+
+*Example 7: Mixing Rational and Irrational*
+Both stem:[2] (rational) and stem:[\pi] (irrational) are *real numbers*.
+They can be placed on the same *number line*.
+
+Visualize:
+- Draw a horizontal line.
+- Mark 0, 1, 2 for rationals.
+- Approximate stem:[\pi \approx 3.14] for an irrational.
+
+== 7. Complex Numbers
+
+*Example 8: Electrical Engineering Context*
+In AC circuit analysis, voltage can be represented as:
+
+stem:[3 + 4i]
+
+Here:
+- 3: the real component (resistance effect).
+- 4i: the imaginary component (reactance effect).
+
+The stem:[i] is defined as stem:[\sqrt{-1}].
+
+== 8. Visual Summary — Number System Diagram
+
+*Description for a Diagram (mental image):*
+Imagine concentric or nested circles:
+- Innermost: *Natural Numbers*
+- Then *Whole Numbers*
+- Then *Integers*
+- Then *Rational Numbers*
+- Overlay: *Irrational Numbers* (separate but within Real Numbers)
+- Outer ring: *Real Numbers*
+- Beyond: *Complex Numbers*
+
+== Wrap-Up
+
+- *Natural Numbers:* Counting positive items.
+- *Whole Numbers:* Counting with zero.
+- *Integers:* Whole numbers + negatives.
+- *Rational:* Fractions, repeating/terminating decimals.
+- *Irrational:* Non-repeating, non-terminating decimals.
+- *Real Numbers:* All rationals + irrationals.
+- *Complex Numbers:* Real + imaginary.
+
+By seeing examples in real life — like elevators, pizzas, construction measurements, and electrical engineering — we can connect abstract concepts to practical applications.

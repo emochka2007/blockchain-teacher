@@ -6,13 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class LessonsService {
   constructor(private readonly prismaService: PrismaService) {}
-  create({
-    topic,
-    lessonPages,
-    practices,
-    homeworks,
-    subjectId,
-  }: CreateLessonDto) {
+  create({ topic, practices, homeworks, subjectId }: CreateLessonDto) {
     return this.prismaService.lessons.create({
       data: {
         topic,
@@ -24,11 +18,6 @@ export class LessonsService {
         homeworks: {
           create: homeworks.map((pr) => {
             return { name: pr.name, content: pr.content };
-          }),
-        },
-        lessonPages: {
-          create: lessonPages.map((pr) => {
-            return { content: pr.content };
           }),
         },
         subject: {
