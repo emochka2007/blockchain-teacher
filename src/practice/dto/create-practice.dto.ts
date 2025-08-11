@@ -5,6 +5,4 @@ export class CreatePracticeDto {
   name: string;
   @IsUUID('4')
   lessonId: string;
-  @IsString()
-  content: string;
 }
