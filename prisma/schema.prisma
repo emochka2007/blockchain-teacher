@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -44,7 +43,6 @@ model practices {
   id         String   @id @default(uuid()) @db.Uuid
   lesson_id  String   @db.Uuid
   name  String
-  content    String   @db.Text
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -58,11 +56,12 @@ model homeworks {
   id            String   @id @default(uuid()) @db.Uuid
   lesson_id     String   @db.Uuid
   name String
-  content       String   @db.Text
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 
   lesson lessons @relation(fields: [lesson_id], references: [id])
+
+  userHomeworks users_homework[]
 
   @@index([lesson_id])
   @@map("homeworks")
@@ -75,6 +74,7 @@ model users {
   created_at DateTime @default(now())
 
   lessonProgress lesson_progress[]
+  userHomeworks users_homework[]
 
   @@map("users")
 }
@@ -91,4 +91,18 @@ model lesson_progress {
   @@index([lesson_id])
   @@index([user_id])
   @@map("lesson_progress")
+}
+
+model users_homework {
+  user_id   String @db.Uuid
+  homework_id String @db.Uuid
+  deadline  String @db.VarChar(16)
+
+  user   users   @relation(fields: [user_id], references: [id])
+  homework homeworks @relation(fields: [homework_id], references: [id])
+
+  @@id([user_id, homework_id])
+  @@index([user_id])
+  @@index([homework_id])
+  @@map("user_homeworks")
 }

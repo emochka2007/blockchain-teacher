@@ -12,12 +12,12 @@ export class LessonsService {
         topic,
         practices: {
           create: practices.map((pr) => {
-            return { name: pr.name, content: pr.content };
+            return { name: pr.name };
           }),
         },
         homeworks: {
           create: homeworks.map((pr) => {
-            return { name: pr.name, content: pr.content };
+            return { name: pr.name };
           }),
         },
         subject: {

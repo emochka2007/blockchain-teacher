@@ -6,10 +6,9 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class PracticeService {
   constructor(private readonly prismaService: PrismaService) {}
-  create({ lessonId, content, name }: CreatePracticeDto) {
+  create({ lessonId, name }: CreatePracticeDto) {
     return this.prismaService.practices.create({
       data: {
-        content,
         name,
         lesson: {
           connect: { id: lessonId },
