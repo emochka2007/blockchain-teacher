@@ -10,7 +10,7 @@ export class SubjectService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getSubjects() {
-    return this.prismaService.subjects.findMany();
+    return this.prismaService.subjects.findMany({});
   }
 
   async createSubjectWithLectures({
