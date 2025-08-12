@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { DocsModule } from './docs/docs.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PromClientModule } from './prom-client/prom-client.module';
+import { SolutionModule } from './solution/solution.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PromClientModule } from './prom-client/prom-client.module';
     UserModule,
     DocsModule,
     PromClientModule,
+    SolutionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
