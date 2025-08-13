@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHomeworkDto } from './dto/create-homework.dto';
+import {
+  CreateHomeworkDto,
+  SubmitHomeworkDto,
+} from './dto/create-homework.dto';
 import { UpdateHomeworkDto } from './dto/update-homework.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -34,5 +37,18 @@ export class HomeworkService {
 
   remove(id: number) {
     return `This action removes a #${id} homework`;
+  }
+
+  async submit({ user_id, homework_id, deadline }: SubmitHomeworkDto) {
+    if (!deadline) {
+      deadline = new Date().toISOString();
+    }
+    return this.prismaService.users_homework.create({
+      data: {
+        user_id,
+        homework_id,
+        deadline,
+      },
+    });
   }
 }

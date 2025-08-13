@@ -103,3 +103,6 @@ Provide **three separate AsciiDoc code blocks** in your answer, one for each fil
 ## First Theme to Create
 \`Types_of_Numbers\`
 `;
+
+export const CHECK_HOMEWORK_PROMT_V1 = `
+  `;

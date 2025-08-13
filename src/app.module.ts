@@ -8,8 +8,12 @@ import { PracticeModule } from './practice/practice.module';
 import { HomeworkModule } from './homework/homework.module';
 import { UserModule } from './user/user.module';
 import { DocsModule } from './docs/docs.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PromClientModule } from './prom-client/prom-client.module';
+import { SolutionModule } from './solution/solution.module';
+import * as process from 'node:process';
+
+const IS_PROD = process.env.PROD;
+const prodModules = [PromClientModule];
 
 @Module({
   imports: [
@@ -20,7 +24,8 @@ import { PromClientModule } from './prom-client/prom-client.module';
     HomeworkModule,
     UserModule,
     DocsModule,
-    PromClientModule,
+    SolutionModule,
+    ...(IS_PROD ? prodModules : []),
   ],
   controllers: [AppController],
   providers: [AppService],
