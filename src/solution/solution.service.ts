@@ -9,8 +9,15 @@ export class SolutionService {
   create({ homeworkId, owner }: CreateSolutionDto) {
     return this.prismaService.solutions.create({
       data: {
-        homework_id: homeworkId,
-        owner,
+        user: {
+          connect: { id: owner },
+        },
+        homework: {
+          connect: { id: homeworkId },
+        },
+      },
+      include: {
+        user: true,
       },
     });
   }

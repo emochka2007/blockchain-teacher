@@ -4,7 +4,7 @@ import {
 } from '@testcontainers/postgresql';
 import { Client } from 'pg';
 import { execSync } from 'child_process';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from './prisma.service';
 
 let postgresContainer: StartedPostgreSqlContainer;
 let postgresClient: Client;
@@ -25,7 +25,10 @@ beforeAll(async () => {
 
   const databaseUrl = `postgresql://${postgresClient.user}:${postgresClient.password}@${postgresClient.host}:${postgresClient.port}/${postgresClient.database}`;
   // Execute Prisma migrations
-  execSync('npx prisma migrate dev', { env: { DATABASE_URL: databaseUrl } });
+  execSync('npx prisma db push --force-reset', {
+    env: { ...process.env, DATABASE_URL: databaseUrl },
+    stdio: 'inherit',
+  });
   prismaService = new PrismaService({
     datasources: {
       db: {
@@ -43,5 +46,5 @@ afterAll(async () => {
   console.log('test db stopped...');
 });
 
-jest.setTimeout(8000);
+jest.setTimeout(30000);
 export { postgresClient, prismaService };
