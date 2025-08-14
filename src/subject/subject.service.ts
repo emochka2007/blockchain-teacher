@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateSubjectDto,
@@ -13,28 +13,17 @@ export class SubjectService {
     return this.prismaService.subjects.findMany({});
   }
 
-  async createSubjectWithLectures({
-    name,
-    lectures,
-  }: CreateSubjectWithExistingLecturesDto) {
+  async createSubjectWithLectures({ name, lectures }: CreateSubjectWithExistingLecturesDto) {
     return this.prismaService.$transaction(async (tx) => {
-      const subject = await tx.subjects.create({
-        data: {
-          name,
-        },
+      const subject = await tx.subjects.create({ data: { name } });
+
+      const { count } = await tx.lessons.updateMany({
+        where: { id: { in: lectures } },
+        data: { subject_id: subject.id },
       });
 
-      const updatedLectures = await tx.lessons.updateMany({
-        where: {
-          id: { in: lectures },
-        },
-        data: {
-          subject_id: subject.id,
-        },
-      });
-
-      if (updatedLectures.count !== lectures.length) {
-        throw new BadRequestException('Some lecture IDs not found');
+      if (count !== lectures.length) {
+        throw new NotFoundException('Some lecture IDs not found');
       }
 
       return tx.subjects.findUnique({
