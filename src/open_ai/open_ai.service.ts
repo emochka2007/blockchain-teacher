@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { BASE_PROMPT_V1, CHECK_HOMEWORK_PROMT_V1 } from './prompts';
 import { BasePromptV1Response } from './open_ai.type';
 import * as fs from 'node:fs';
-import { response } from 'express';
 import { JoinedHomeworkEntity } from '../homework/homework.interface';
 
 @Injectable()
@@ -21,14 +20,9 @@ export class OpenAiService {
     return BASE_PROMPT_V1;
   }
 
-  readDocs(
-    type: 'homework' | 'lesson' | 'practice',
-    subject: string,
-    topic: string,
-    homeworkName: string,
-  ) {
+  readDocs(subject: string, topic: string, homeworkName: string) {
     return fs.readFileSync(
-      `./public/docs/${subject}/${topic}/${homeworkName}.html`,
+      `./public/docs/${subject}/${topic}/${homeworkName}.adoc`,
       'utf-8',
     );
   }
@@ -62,14 +56,14 @@ export class OpenAiService {
     return JSON.parse(response.output_text) as BasePromptV1Response;
   }
 
-  checkHomework(homework: JoinedHomeworkEntity, userSolution: string) {
-    const homeworkText = this.readDocs(
-      'homework',
-      homework.lesson.subject.name,
-      homework.lesson.topic,
-      homework.name,
-    );
-    return this.openAiClient.responses.create({
+  async checkHomework({
+    homeworkName,
+    lessonName,
+    subjectName,
+    solution,
+  }: JoinedHomeworkEntity) {
+    const homeworkText = this.readDocs(subjectName, lessonName, homeworkName);
+    const response = await this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
       input: [
         {
@@ -82,9 +76,10 @@ export class OpenAiService {
         },
         {
           role: 'user',
-          content: [{ type: 'input_text', text: userSolution }],
+          content: [{ type: 'input_text', text: solution }],
         },
       ],
     });
+    return response.output_text;
   }
 }

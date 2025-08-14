@@ -9,8 +9,8 @@ import {
 export class SubjectService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getSubjects() {
-    return this.prismaService.subjects.findMany({});
+  getSubjects() {
+    return this.prismaService.subject.findMany({});
   }
 
   async createSubjectWithLectures({
@@ -18,13 +18,13 @@ export class SubjectService {
     lectures,
   }: CreateSubjectWithExistingLecturesDto) {
     return this.prismaService.$transaction(async (tx) => {
-      const subject = await tx.subjects.create({
+      const subject = await tx.subject.create({
         data: {
           name,
         },
       });
 
-      const updatedLectures = await tx.lessons.updateMany({
+      const updatedLectures = await tx.lesson.updateMany({
         where: {
           id: { in: lectures },
         },
@@ -37,15 +37,15 @@ export class SubjectService {
         throw new BadRequestException('Some lecture IDs not found');
       }
 
-      return tx.subjects.findUnique({
+      return tx.subject.findUnique({
         where: { id: subject.id },
         include: { lessons: true },
       });
     });
   }
 
-  async createSubject({ name }: CreateSubjectDto) {
-    return this.prismaService.subjects.create({
+  createSubject({ name }: CreateSubjectDto) {
+    return this.prismaService.subject.create({
       data: {
         name,
       },

@@ -9,9 +9,18 @@ export class CreateHomeworkDto {
 
 export class SubmitHomeworkDto {
   @IsUUID('4')
-  user_id: string;
+  userId: string;
   @IsUUID('4')
-  homework_id: string;
+  homeworkId: string;
+  @IsString()
+  solution: string;
+}
+
+export class StartHomeworkDto {
+  @IsUUID('4')
+  userId: string;
+  @IsUUID('4')
+  homeworkId: string;
   @IsOptional()
   @IsDate()
   deadline?: string;

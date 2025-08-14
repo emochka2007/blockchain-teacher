@@ -6,20 +6,10 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class LessonsService {
   constructor(private readonly prismaService: PrismaService) {}
-  create({ topic, practices, homeworks, subjectId }: CreateLessonDto) {
-    return this.prismaService.lessons.create({
+  create({ topic, subjectId }: CreateLessonDto) {
+    return this.prismaService.lesson.create({
       data: {
         topic,
-        practices: {
-          create: practices.map((pr) => {
-            return { name: pr.name };
-          }),
-        },
-        homeworks: {
-          create: homeworks.map((pr) => {
-            return { name: pr.name };
-          }),
-        },
         subject: {
           connect: {
             id: subjectId,
@@ -30,7 +20,7 @@ export class LessonsService {
   }
 
   findAll() {
-    return `This action returns all lessons`;
+    return this.prismaService.lesson.findMany({});
   }
 
   findOne(id: number) {

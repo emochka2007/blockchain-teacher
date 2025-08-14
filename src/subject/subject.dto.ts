@@ -1,4 +1,10 @@
-import { ArrayNotEmpty, IsArray, IsString, IsUUID } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateSubjectWithExistingLecturesDto {
   @IsString()
@@ -11,5 +17,6 @@ export class CreateSubjectWithExistingLecturesDto {
 }
 export class CreateSubjectDto {
   @IsString()
+  @IsNotEmpty()
   name: string;
 }
