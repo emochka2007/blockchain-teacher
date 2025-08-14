@@ -9,14 +9,18 @@ import { HomeworkModule } from './homework/homework.module';
 import { UserModule } from './user/user.module';
 import { DocsModule } from './docs/docs.module';
 import { PromClientModule } from './prom-client/prom-client.module';
-import { SolutionModule } from './solution/solution.module';
+import { FlowModule } from './flow/flow.module';
+import { HomeworkCheckerModule } from './homework-checker/homework-checker.module';
 import * as process from 'node:process';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const IS_PROD = process.env.PROD;
 const prodModules = [PromClientModule];
 
 @Module({
   imports: [
+    //module for testing
+    FlowModule,
     SubjectModule,
     PrismaModule,
     LessonsModule,
@@ -24,8 +28,10 @@ const prodModules = [PromClientModule];
     HomeworkModule,
     UserModule,
     DocsModule,
-    SolutionModule,
     ...(IS_PROD ? prodModules : []),
+    FlowModule,
+    HomeworkCheckerModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

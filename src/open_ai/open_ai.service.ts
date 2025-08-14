@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { BASE_PROMPT_V1, CHECK_HOMEWORK_PROMT_V1 } from './prompts';
 import { BasePromptV1Response } from './open_ai.type';
 import * as fs from 'node:fs';
-import { response } from 'express';
 import { JoinedHomeworkEntity } from '../homework/homework.interface';
 
 @Injectable()
@@ -62,12 +61,17 @@ export class OpenAiService {
     return JSON.parse(response.output_text) as BasePromptV1Response;
   }
 
-  checkHomework(homework: JoinedHomeworkEntity, userSolution: string) {
+  checkHomework({
+    homeworkName,
+    lessonName,
+    subjectName,
+    solution,
+  }: JoinedHomeworkEntity) {
     const homeworkText = this.readDocs(
       'homework',
-      homework.lesson.subject.name,
-      homework.lesson.topic,
-      homework.name,
+      subjectName,
+      lessonName,
+      homeworkName,
     );
     return this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
@@ -82,7 +86,7 @@ export class OpenAiService {
         },
         {
           role: 'user',
-          content: [{ type: 'input_text', text: userSolution }],
+          content: [{ type: 'input_text', text: solution }],
         },
       ],
     });

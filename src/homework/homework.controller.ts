@@ -8,19 +8,33 @@ import {
   Delete,
 } from '@nestjs/common';
 import { HomeworkService } from './homework.service';
-import { CreateHomeworkDto } from './dto/create-homework.dto';
+import {
+  CreateHomeworkDto,
+  StartHomeworkDto,
+  SubmitHomeworkDto,
+} from './dto/create-homework.dto';
 import { UpdateHomeworkDto } from './dto/update-homework.dto';
 
 @Controller('homework')
 export class HomeworkController {
   constructor(private readonly homeworkService: HomeworkService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createHomeworkDto: CreateHomeworkDto) {
     return this.homeworkService.create(createHomeworkDto);
   }
 
-  @Get()
+  @Post('submit')
+  submit(@Body() dto: SubmitHomeworkDto) {
+    return this.homeworkService.submitSolution(dto);
+  }
+
+  @Post('start')
+  start(@Body() dto: StartHomeworkDto) {
+    return this.homeworkService.startHomework(dto);
+  }
+
+  @Get('all')
   findAll() {
     return this.homeworkService.findAll();
   }

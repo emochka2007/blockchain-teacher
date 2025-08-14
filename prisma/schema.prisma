@@ -13,111 +13,111 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model subjects {
+model Subject {
   id         String   @id @default(uuid()) @db.Uuid
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  lessons lessons[]
-
-  @@map("subjects")
+  lessons Lesson[]
 }
 
-model lessons {
-  id         String      @id @default(uuid()) @db.Uuid
-  subject_id String      @db.Uuid
+model Lesson {
+  id         String     @id @default(uuid()) @db.Uuid
+  subject_id String     @db.Uuid
   topic      String
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
-  subject    subjects    @relation(fields: [subject_id], references: [id])
-  practices  practices[]
-  homeworks  homeworks[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  subject    Subject    @relation(fields: [subject_id], references: [id])
+  practices  Practice[]
+  homeworks  Homework[]
 
-  lessonProgress lesson_progress[]
-
-  @@map("lessons")
+  lessonProgress LessonProgress[]
 }
 
-model practices {
+model Practice {
   id         String   @id @default(uuid()) @db.Uuid
   lesson_id  String   @db.Uuid
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  lesson lessons @relation(fields: [lesson_id], references: [id])
+  lesson        Lesson         @relation(fields: [lesson_id], references: [id])
+  userPractices UserPractice[]
 
   @@index([lesson_id])
-  @@map("practices")
 }
 
-model homeworks {
-  id         String   @id @default(uuid()) @db.Uuid
-  lesson_id  String   @db.Uuid
-  name       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  lesson lessons @relation(fields: [lesson_id], references: [id])
-
-  userHomeworks users_homework[]
-  solutions     solutions[]
+model Homework {
+  id            String         @id @default(uuid()) @db.Uuid
+  lesson_id     String         @db.Uuid
+  name          String
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  lesson        Lesson         @relation(fields: [lesson_id], references: [id])
+  userHomeworks UserHomework[]
 
   @@index([lesson_id])
-  @@map("homeworks")
 }
 
-model users {
+model User {
   id         String   @id @default(uuid()) @db.Uuid
   username   String   @db.VarChar(255)
   role       String   @db.VarChar(100)
-  created_at DateTime @default(now())
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
 
-  lessonProgress lesson_progress[]
-  userHomeworks  users_homework[]
-  solution       solutions[]
 
-  @@map("users")
+  lessonProgress LessonProgress[]
+  userHomeworks  UserHomework[]
+  userPractices  UserPractice[]
 }
 
-model lesson_progress {
+model LessonProgress {
   user_id   String @db.Uuid
   lesson_id String @db.Uuid
   progress  String @db.VarChar(16)
 
-  user   users   @relation(fields: [user_id], references: [id])
-  lesson lessons @relation(fields: [lesson_id], references: [id])
+  user   User   @relation(fields: [user_id], references: [id])
+  lesson Lesson @relation(fields: [lesson_id], references: [id])
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
 
   @@id([user_id, lesson_id])
   @@index([lesson_id])
   @@index([user_id])
-  @@map("lesson_progress")
 }
 
-model users_homework {
-  user_id     String @db.Uuid
-  homework_id String @db.Uuid
-  deadline    String @db.VarChar(16)
+model UserHomework {
+  user_id  String @db.Uuid
+  task_id  String @db.Uuid
+  solution String? @db.Text
+  deadline DateTime
+  score Int? @db.Integer
 
-  user     users     @relation(fields: [user_id], references: [id])
-  homework homeworks @relation(fields: [homework_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+  homework Homework @relation(fields: [task_id], references: [id])
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
 
-  @@id([user_id, homework_id])
+  @@id([user_id, task_id])
   @@index([user_id])
-  @@index([homework_id])
-  @@map("user_homeworks")
+  @@index([task_id])
 }
 
-model solutions {
-  id          String    @id @default(uuid()) @db.Uuid
-  owner_id    String    @db.Uuid()
-  homework_id String    @db.Uuid
-  homework    homeworks @relation(fields: [homework_id], references: [id])
-  user        users     @relation(fields: [owner_id], references: [id])
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+model UserPractice {
+  user_id  String @db.Uuid
+  task_id  String @db.Uuid
+  deadline DateTime
+  solution String? @db.Text
+  score Int? @db.Integer
 
-  @@index([homework_id])
-  @@map("solutions")
+  user     User     @relation(fields: [user_id], references: [id])
+  practice Practice @relation(fields: [task_id], references: [id])
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+
+  @@id([user_id, task_id])
+  @@index([user_id])
+  @@index([task_id])
 }

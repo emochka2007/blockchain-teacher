@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class PracticeService {
   constructor(private readonly prismaService: PrismaService) {}
   create({ lessonId, name }: CreatePracticeDto) {
-    return this.prismaService.practices.create({
+    return this.prismaService.practice.create({
       data: {
         name,
         lesson: {
@@ -21,7 +21,7 @@ export class PracticeService {
   }
 
   findAll() {
-    return this.prismaService.practices.findMany({
+    return this.prismaService.practice.findMany({
       include: {
         lesson: true,
       },
