@@ -13,13 +13,19 @@ import { FlowModule } from './flow/flow.module';
 import { HomeworkCheckerModule } from './homework-checker/homework-checker.module';
 import * as process from 'node:process';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 const IS_PROD = process.env.PROD;
 const prodModules = [PromClientModule];
 
 @Module({
   imports: [
-    //module for testing
+    ConfigModule.forRoot({
+      envFilePath: ['.env'],
+      isGlobal: true,
+      load: [configuration],
+    }),
     FlowModule,
     SubjectModule,
     PrismaModule,

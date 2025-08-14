@@ -20,14 +20,9 @@ export class OpenAiService {
     return BASE_PROMPT_V1;
   }
 
-  readDocs(
-    type: 'homework' | 'lesson' | 'practice',
-    subject: string,
-    topic: string,
-    homeworkName: string,
-  ) {
+  readDocs(subject: string, topic: string, homeworkName: string) {
     return fs.readFileSync(
-      `./public/docs/${subject}/${topic}/${homeworkName}.html`,
+      `./public/docs/${subject}/${topic}/${homeworkName}.adoc`,
       'utf-8',
     );
   }
@@ -61,19 +56,14 @@ export class OpenAiService {
     return JSON.parse(response.output_text) as BasePromptV1Response;
   }
 
-  checkHomework({
+  async checkHomework({
     homeworkName,
     lessonName,
     subjectName,
     solution,
   }: JoinedHomeworkEntity) {
-    const homeworkText = this.readDocs(
-      'homework',
-      subjectName,
-      lessonName,
-      homeworkName,
-    );
-    return this.openAiClient.responses.create({
+    const homeworkText = this.readDocs(subjectName, lessonName, homeworkName);
+    const response = await this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
       input: [
         {
@@ -90,5 +80,6 @@ export class OpenAiService {
         },
       ],
     });
+    return response.output_text;
   }
 }
