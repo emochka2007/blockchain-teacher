@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLessonDto } from './dto/create-lesson.dto';
+import { CreateLessonDto, StartLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { createStartPracticeFile } from '../utils/helpers';
 
 @Injectable()
 export class LessonsService {
@@ -21,6 +22,11 @@ export class LessonsService {
 
   findAll() {
     return this.prismaService.lesson.findMany({});
+  }
+
+  async startLesson({ userId, lessonName }: StartLessonDto) {
+    await createStartPracticeFile(userId, lessonName);
+    return `Lesson started. Practice file created`;
   }
 
   findOne(id: number) {

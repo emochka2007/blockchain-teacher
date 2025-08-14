@@ -69,7 +69,7 @@ async function main() {
     topic: 'Numbers and algebra',
     practices: [
       {
-        name: 'practice_1.adoc',
+        name: 'prac_1.adoc',
       },
     ],
     homework: [

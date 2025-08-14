@@ -12,3 +12,5 @@ export type BasePromptV1Response = {
   };
   style_based_message: string;
 };
+
+export type OpenAiReviewType = { score: number; review_details: string };

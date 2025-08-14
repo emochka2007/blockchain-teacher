@@ -6,3 +6,10 @@ export class CreatePracticeDto {
   @IsUUID('4')
   lessonId: string;
 }
+
+export class ReviewPracticeDto {
+  @IsUUID('4')
+  lessonId: string;
+  @IsUUID('4')
+  userId: string;
+}
