@@ -13,3 +13,7 @@ export class StartLessonDto {
   @IsString()
   lessonName: string;
 }
+export class InitLessonsDto {
+  @IsString()
+  subjectName: string;
+}

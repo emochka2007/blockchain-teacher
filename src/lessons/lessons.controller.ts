@@ -8,7 +8,11 @@ import {
   Delete,
 } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
-import { CreateLessonDto, StartLessonDto } from './dto/create-lesson.dto';
+import {
+  CreateLessonDto,
+  InitLessonsDto,
+  StartLessonDto,
+} from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 
 @Controller('lessons')
@@ -43,5 +47,10 @@ export class LessonsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.lessonsService.remove(+id);
+  }
+
+  @Post('init')
+  initializeLessons(@Body() initLessonDto: InitLessonsDto) {
+    return this.lessonsService.initializeLessons(initLessonDto);
   }
 }

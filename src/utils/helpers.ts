@@ -64,6 +64,23 @@ export const createReviewHomeworkFile = async (
   return path;
 };
 
+export const createLessonFiles = async (
+  type: 'lesson' | 'practice' | 'homework',
+  topic: string,
+  data: string,
+  subject: string,
+) => {
+  const dirPath = `./public/docs/${subject}/${topic}`;
+  await ensureUserDir(dirPath);
+  let path = `${dirPath}/${type}.adoc`;
+  if (type != 'lesson') {
+    // add prefix
+    path = `${dirPath}/${topic}_${type}.adoc`;
+  }
+  await fs.promises.writeFile(path, data, 'utf-8');
+  return path;
+};
+
 export const checkFileExists = async (path: string) => {
   try {
     // 4 is readable

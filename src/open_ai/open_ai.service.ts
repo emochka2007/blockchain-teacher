@@ -5,6 +5,9 @@ import {
   BASE_PROMPT_V1,
   CHECK_HOMEWORK_PROMT_V1,
   CHECK_PRACTICE_PROMPT_V1,
+  CREATE_HOMEWORK_PROMPT_V1,
+  CREATE_LESSON_PROMPT_V1,
+  CREATE_PRACTICE_PROMPT_V1,
 } from './prompts';
 import { BasePromptV1Response, OpenAiReviewType } from './open_ai.type';
 import * as fs from 'node:fs';
@@ -12,7 +15,7 @@ import {
   CheckPracticeDto,
   JoinedHomeworkEntity,
 } from '../homework/homework.interface';
-import { createReviewPracticeFile } from '../utils/helpers';
+import { createLessonFiles, createReviewPracticeFile } from '../utils/helpers';
 
 @Injectable()
 export class OpenAiService {
@@ -123,5 +126,66 @@ export class OpenAiService {
     });
     this.logger.log(response.output_text);
     return JSON.parse(response.output_text) as OpenAiReviewType;
+  }
+
+  async getLessonContent(lessonName: string) {
+    const { output_text: lessonText } =
+      await this.openAiClient.responses.create({
+        model: 'gpt-4.1-mini',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: CREATE_LESSON_PROMPT_V1 }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: lessonName }],
+          },
+        ],
+      });
+    this.logger.log(lessonText);
+    return lessonText;
+  }
+
+  async getPracticeContent(lessonText: string) {
+    const { output_text: practiceText } =
+      await this.openAiClient.responses.create({
+        model: 'gpt-4.1-mini',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: CREATE_PRACTICE_PROMPT_V1 }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: lessonText }],
+          },
+        ],
+      });
+    this.logger.log(practiceText);
+    return practiceText;
+  }
+
+  async getHomeworkContent(lessonText: string, practiceText: string) {
+    const { output_text: homeworkText } =
+      await this.openAiClient.responses.create({
+        model: 'gpt-4.1-mini',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: CREATE_HOMEWORK_PROMPT_V1 }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: lessonText }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: practiceText }],
+          },
+        ],
+      });
+    this.logger.log(homeworkText);
+    return homeworkText;
   }
 }
