@@ -6,6 +6,7 @@ export class HomeworkCheckerController {
   constructor(
     private readonly homeworkCheckerService: HomeworkCheckerService,
   ) {}
+
   @Post('force-check')
   forceCheck() {
     return this.homeworkCheckerService.checkHomework();

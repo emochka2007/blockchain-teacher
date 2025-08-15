@@ -12,8 +12,6 @@ export class SubmitHomeworkDto {
   userId: string;
   @IsUUID('4')
   homeworkId: string;
-  @IsString()
-  solution: string;
 }
 
 export class StartHomeworkDto {

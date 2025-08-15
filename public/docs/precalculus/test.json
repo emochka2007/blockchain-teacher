@@ -1,48 +1,24 @@
-"precalculus_month": {
-"week_1": {
-"Numbers_and_Algebra": {
-"Types_of_Numbers": 2,
-"Basic_Operations_and_Fractions": 2,
-"Powers_and_Roots": 2,
-"Simplifying_Expressions": 2
-},
-"Functions": {
-"What_is_a_Function": 2,
-"Graphs_Basics": 2
-}
-},
-"week_2": {
-"Algebra_Advanced": {
-"Linear_Equations": 2,
-"Quadratic_Equations": 3,
-"Systems_of_Equations": 3
-},
-"Functions": {
-"Polynomials": 2,
-"Rational_Functions": 2
-}
-},
-"week_3": {
-"Trigonometry": {
-"Angles_Degrees_Radians": 2,
-"Sine_Cosine_Tangent": 2,
-"Basic_Trig_Identities": 2,
-"Graphs_of_Trig_Functions": 2
-},
-"Exponential_and_Logarithmic_Functions": {
-"Exponentials": 2,
-"Logarithms": 2
-}
-},
-"week_4": {
-"Intro_to_Limits": {
-"Concept_of_a_Limit": 2,
-"Numerical_and_Graphical_Estimation": 2
-},
-"Preparation_for_Calculus": {
-"Slope_and_Rate_of_Change": 2,
-"Area_and_Summation_Concepts": 2
-},
-"Review_and_Practice": 4
-}
-}
+[
+  "Types_of_Numbers",
+  "Basic_Operations_and_Fractions",
+  "Powers_and_Roots",
+  "Simplifying_Expressions",
+  "What_is_a_Function",
+  "Graphs_Basics",
+  "Linear_Equations",
+  "Quadratic_Equations",
+  "Systems_of_Equations",
+  "Polynomials",
+  "Rational_Functions",
+  "Angles_Degrees_Radians",
+  "Sine_Cosine_Tangent",
+  "Basic_Trig_Identities",
+  "Graphs_of_Trig_Functions",
+  "Exponentials",
+  "Logarithms",
+  "Concept_of_a_Limit",
+  "Numerical_and_Graphical_Estimation",
+  "Slope_and_Rate_of_Change",
+  "Area_and_Summation_Concepts",
+  "Review_and_Practice"
+]

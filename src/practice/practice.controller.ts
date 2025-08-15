@@ -8,7 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PracticeService } from './practice.service';
-import { CreatePracticeDto } from './dto/create-practice.dto';
+import {
+  CreatePracticeDto,
+  ReviewPracticeDto,
+} from './dto/create-practice.dto';
 import { UpdatePracticeDto } from './dto/update-practice.dto';
 
 @Controller('practice')
@@ -18,6 +21,11 @@ export class PracticeController {
   @Post('create')
   create(@Body() createPracticeDto: CreatePracticeDto) {
     return this.practiceService.create(createPracticeDto);
+  }
+
+  @Post('review')
+  review(@Body() dto: ReviewPracticeDto) {
+    return this.practiceService.review(dto);
   }
 
   @Get()

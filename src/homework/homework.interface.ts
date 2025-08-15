@@ -5,6 +5,13 @@ export type JoinedHomeworkEntity = {
   solution: string;
 };
 
+export type CheckPracticeDto = {
+  userId: string;
+  practiceName: string;
+  lessonName: string;
+  subjectName: string;
+};
+
 export type Solution = {
   id: string;
   lesson_id: string;

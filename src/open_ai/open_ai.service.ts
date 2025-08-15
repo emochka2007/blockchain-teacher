@@ -1,13 +1,25 @@
 import { ConfigService } from '@nestjs/config';
 import { OpenAI } from 'openai';
-import { Injectable } from '@nestjs/common';
-import { BASE_PROMPT_V1, CHECK_HOMEWORK_PROMT_V1 } from './prompts';
-import { BasePromptV1Response } from './open_ai.type';
+import { Injectable, Logger } from '@nestjs/common';
+import {
+  BASE_PROMPT_V1,
+  CHECK_HOMEWORK_PROMT_V1,
+  CHECK_PRACTICE_PROMPT_V1,
+  CREATE_HOMEWORK_PROMPT_V1,
+  CREATE_LESSON_PROMPT_V1,
+  CREATE_PRACTICE_PROMPT_V1,
+} from './prompts';
+import { BasePromptV1Response, OpenAiReviewType } from './open_ai.type';
 import * as fs from 'node:fs';
-import { JoinedHomeworkEntity } from '../homework/homework.interface';
+import {
+  CheckPracticeDto,
+  JoinedHomeworkEntity,
+} from '../homework/homework.interface';
+import { createLessonFiles, createReviewPracticeFile } from '../utils/helpers';
 
 @Injectable()
 export class OpenAiService {
+  private readonly logger: Logger = new Logger();
   private openAiClient: OpenAI;
 
   constructor(private readonly configService: ConfigService) {
@@ -16,44 +28,76 @@ export class OpenAiService {
     });
   }
 
-  base_prompt() {
+  private base_prompt() {
     return BASE_PROMPT_V1;
   }
 
-  readDocs(subject: string, topic: string, homeworkName: string) {
+  private readDocs(subject: string, topic: string, homeworkName: string) {
     return fs.readFileSync(
       `./public/docs/${subject}/${topic}/${homeworkName}.adoc`,
       'utf-8',
     );
   }
 
-  async sendImageWithRef(
-    image_buffer: string,
-    refImage: string,
-  ): Promise<BasePromptV1Response> {
+  // async sendImageWithRef(
+  //   image_buffer: string,
+  //   refImage: string,
+  // ): Promise<BasePromptV1Response> {
+  //   const response = await this.openAiClient.responses.create({
+  //     model: 'gpt-4.1-mini',
+  //     input: [
+  //       {
+  //         role: 'user',
+  //         content: [
+  //           { type: 'input_text', text: this.base_prompt() },
+  //           {
+  //             type: 'input_image',
+  //             image_url: `data:image/jpeg;base64,${image_buffer}`,
+  //             detail: 'auto',
+  //           },
+  //           {
+  //             type: 'input_image',
+  //             image_url: `data:image/jpeg;base64,${refImage}`,
+  //             detail: 'auto',
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   });
+  //   console.log(response.output_text);
+  //   return JSON.parse(response.output_text) as BasePromptV1Response;
+  // }
+
+  async checkPractice({
+    userId,
+    lessonName,
+    subjectName,
+    practiceName,
+  }: CheckPracticeDto): Promise<string> {
+    const practiceText = this.readDocs(
+      subjectName.toLowerCase(),
+      lessonName.toLowerCase(),
+      practiceName,
+    );
+    const solution = this.readDocs('practices', userId, lessonName);
     const response = await this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
       input: [
         {
+          role: 'system',
+          content: [{ type: 'input_text', text: CHECK_PRACTICE_PROMPT_V1 }],
+        },
+        {
           role: 'user',
-          content: [
-            { type: 'input_text', text: this.base_prompt() },
-            {
-              type: 'input_image',
-              image_url: `data:image/jpeg;base64,${image_buffer}`,
-              detail: 'auto',
-            },
-            {
-              type: 'input_image',
-              image_url: `data:image/jpeg;base64,${refImage}`,
-              detail: 'auto',
-            },
-          ],
+          content: [{ type: 'input_text', text: practiceText }],
+        },
+        {
+          role: 'user',
+          content: [{ type: 'input_text', text: solution }],
         },
       ],
     });
-    console.log(response.output_text);
-    return JSON.parse(response.output_text) as BasePromptV1Response;
+    return createReviewPracticeFile(userId, response.output_text, lessonName);
   }
 
   async checkHomework({
@@ -61,7 +105,7 @@ export class OpenAiService {
     lessonName,
     subjectName,
     solution,
-  }: JoinedHomeworkEntity) {
+  }: JoinedHomeworkEntity): Promise<OpenAiReviewType> {
     const homeworkText = this.readDocs(subjectName, lessonName, homeworkName);
     const response = await this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
@@ -80,6 +124,68 @@ export class OpenAiService {
         },
       ],
     });
-    return response.output_text;
+    this.logger.log(response.output_text);
+    return JSON.parse(response.output_text) as OpenAiReviewType;
+  }
+
+  async getLessonContent(lessonName: string) {
+    const { output_text: lessonText } =
+      await this.openAiClient.responses.create({
+        model: 'gpt-4.1-mini',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: CREATE_LESSON_PROMPT_V1 }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: lessonName }],
+          },
+        ],
+      });
+    this.logger.log(lessonText);
+    return lessonText;
+  }
+
+  async getPracticeContent(lessonText: string) {
+    const { output_text: practiceText } =
+      await this.openAiClient.responses.create({
+        model: 'gpt-4.1-mini',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: CREATE_PRACTICE_PROMPT_V1 }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: lessonText }],
+          },
+        ],
+      });
+    this.logger.log(practiceText);
+    return practiceText;
+  }
+
+  async getHomeworkContent(lessonText: string, practiceText: string) {
+    const { output_text: homeworkText } =
+      await this.openAiClient.responses.create({
+        model: 'gpt-4.1-mini',
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: CREATE_HOMEWORK_PROMPT_V1 }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: lessonText }],
+          },
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: practiceText }],
+          },
+        ],
+      });
+    this.logger.log(homeworkText);
+    return homeworkText;
   }
 }
