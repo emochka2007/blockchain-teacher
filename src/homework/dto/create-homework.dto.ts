@@ -2,7 +2,7 @@ import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateHomeworkDto {
   @IsString()
-  name: string;
+  path: string;
   @IsUUID('4')
   lessonId: string;
 }

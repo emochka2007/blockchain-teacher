@@ -20,5 +20,4 @@ export const PRECALCULUS = [
   'Numerical_and_Graphical_Estimation',
   'Slope_and_Rate_of_Change',
   'Area_and_Summation_Concepts',
-  'Review_and_Practice',
 ];

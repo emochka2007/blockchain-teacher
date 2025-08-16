@@ -12,10 +12,10 @@ import { createSolutionFile, readSolutionFromFile } from '../utils/helpers';
 export class HomeworkService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create({ name, lessonId }: CreateHomeworkDto) {
+  create({ path, lessonId }: CreateHomeworkDto) {
     return this.prismaService.homework.create({
       data: {
-        name,
+        path,
         lesson: {
           connect: { id: lessonId },
         },

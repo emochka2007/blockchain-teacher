@@ -7,5 +7,6 @@ import { OpenAiModule } from '../open_ai/open_ai.module';
   imports: [OpenAiModule],
   controllers: [PracticeController],
   providers: [PracticeService],
+  exports: [PracticeService],
 })
 export class PracticeModule {}

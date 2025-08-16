@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { OpenAiService } from '../open_ai/open_ai.service';
-import { createReviewHomeworkFile } from '../utils/helpers';
+import {
+  createReviewHomeworkFile,
+  readFileContentAsync,
+} from '../utils/helpers';
 
 @Injectable()
 export class HomeworkCheckerService {
@@ -38,12 +41,13 @@ export class HomeworkCheckerService {
         },
       },
     });
+
+    const homeworkContent = await readFileContentAsync(fullHomework.path);
+
     const { score, review_details } = await this.openAiService.checkHomework({
-      lessonName: fullHomework.lesson.topic,
-      homeworkName: fullHomework.name,
-      subjectName: fullHomework.lesson.subject.name,
       // is that correct?
       solution: solution!,
+      homeworkContent,
     });
     this.logger.log(`Score ${score}`);
 

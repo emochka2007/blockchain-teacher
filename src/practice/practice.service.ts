@@ -6,6 +6,7 @@ import {
 import { UpdatePracticeDto } from './dto/update-practice.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { OpenAiService } from '../open_ai/open_ai.service';
+import { readFileContentAsync } from '../utils/helpers';
 
 @Injectable()
 export class PracticeService {
@@ -13,10 +14,10 @@ export class PracticeService {
     private readonly prismaService: PrismaService,
     private readonly openAiService: OpenAiService,
   ) {}
-  create({ lessonId, name }: CreatePracticeDto) {
+  create({ lessonId, path }: CreatePracticeDto) {
     return this.prismaService.practice.create({
       data: {
-        name,
+        path,
         lesson: {
           connect: { id: lessonId },
         },
@@ -41,11 +42,18 @@ export class PracticeService {
       },
     });
 
+    const solutionContent = await readFileContentAsync(
+      this.practicePath(userId, practice.lesson.topic),
+    );
+
+    const practiceContent = await readFileContentAsync(practice.path);
+
     return this.openAiService.checkPractice({
       userId,
       lessonName: practice.lesson.topic,
       subjectName: practice.lesson.subject.name,
-      practiceName: practice.name,
+      solutionContent,
+      practiceContent,
     });
   }
 
@@ -67,5 +75,9 @@ export class PracticeService {
 
   remove(id: number) {
     return `This action removes a #${id} practice`;
+  }
+
+  practicePath(userId: string, lessonName: string) {
+    return `./public/docs/practices/${userId}/${lessonName}`;
   }
 }

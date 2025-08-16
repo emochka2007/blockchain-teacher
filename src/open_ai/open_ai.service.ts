@@ -9,13 +9,12 @@ import {
   CREATE_LESSON_PROMPT_V1,
   CREATE_PRACTICE_PROMPT_V1,
 } from './prompts';
-import { BasePromptV1Response, OpenAiReviewType } from './open_ai.type';
-import * as fs from 'node:fs';
+import { OpenAiReviewType } from './open_ai.type';
 import {
   CheckPracticeDto,
-  JoinedHomeworkEntity,
+  CheckHomeworkDto,
 } from '../homework/homework.interface';
-import { createLessonFiles, createReviewPracticeFile } from '../utils/helpers';
+import { createReviewPracticeFile } from '../utils/helpers';
 
 @Injectable()
 export class OpenAiService {
@@ -30,13 +29,6 @@ export class OpenAiService {
 
   private base_prompt() {
     return BASE_PROMPT_V1;
-  }
-
-  private readDocs(subject: string, topic: string, homeworkName: string) {
-    return fs.readFileSync(
-      `./public/docs/${subject}/${topic}/${homeworkName}.adoc`,
-      'utf-8',
-    );
   }
 
   // async sendImageWithRef(
@@ -71,15 +63,9 @@ export class OpenAiService {
   async checkPractice({
     userId,
     lessonName,
-    subjectName,
-    practiceName,
+    practiceContent,
+    solutionContent,
   }: CheckPracticeDto): Promise<string> {
-    const practiceText = this.readDocs(
-      subjectName.toLowerCase(),
-      lessonName.toLowerCase(),
-      practiceName,
-    );
-    const solution = this.readDocs('practices', userId, lessonName);
     const response = await this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
       input: [
@@ -89,11 +75,11 @@ export class OpenAiService {
         },
         {
           role: 'user',
-          content: [{ type: 'input_text', text: practiceText }],
+          content: [{ type: 'input_text', text: practiceContent }],
         },
         {
           role: 'user',
-          content: [{ type: 'input_text', text: solution }],
+          content: [{ type: 'input_text', text: solutionContent }],
         },
       ],
     });
@@ -101,12 +87,9 @@ export class OpenAiService {
   }
 
   async checkHomework({
-    homeworkName,
-    lessonName,
-    subjectName,
     solution,
-  }: JoinedHomeworkEntity): Promise<OpenAiReviewType> {
-    const homeworkText = this.readDocs(subjectName, lessonName, homeworkName);
+    homeworkContent,
+  }: CheckHomeworkDto): Promise<OpenAiReviewType> {
     const response = await this.openAiClient.responses.create({
       model: 'gpt-4.1-mini',
       input: [
@@ -116,7 +99,7 @@ export class OpenAiService {
         },
         {
           role: 'user',
-          content: [{ type: 'input_text', text: homeworkText }],
+          content: [{ type: 'input_text', text: homeworkContent }],
         },
         {
           role: 'user',
@@ -143,7 +126,6 @@ export class OpenAiService {
           },
         ],
       });
-    this.logger.log(lessonText);
     return lessonText;
   }
 
@@ -162,7 +144,6 @@ export class OpenAiService {
           },
         ],
       });
-    this.logger.log(practiceText);
     return practiceText;
   }
 
@@ -185,7 +166,6 @@ export class OpenAiService {
           },
         ],
       });
-    this.logger.log(homeworkText);
     return homeworkText;
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   CreateLessonDto,
   InitLessonsDto,
@@ -14,6 +14,7 @@ import { PracticeService } from '../practice/practice.service';
 
 @Injectable()
 export class LessonsService {
+  private readonly logger: Logger = new Logger();
   constructor(
     private readonly prismaService: PrismaService,
     private readonly openAiService: OpenAiService,
@@ -64,6 +65,7 @@ export class LessonsService {
       });
 
     for (let topic of PRECALCULUS) {
+      this.logger.log(`Processing topic - ${topic}`);
       topic = topic.toLowerCase();
       const lesson = await this.prismaService.lesson.findUnique({
         where: {
@@ -78,20 +80,34 @@ export class LessonsService {
       const lessonContent = await this.openAiService.getLessonContent(topic);
       const { id: lessonId } = await this.create({ topic, subjectId });
       await createLessonFiles('lesson', topic, lessonContent, subjName);
+      this.logger.log(`Lesson created ${topic}`);
       // Practice
       const practiceContent =
         await this.openAiService.getPracticeContent(lessonContent);
-      await createLessonFiles('practice', topic, practiceContent, subjName);
+      const practicePath = await createLessonFiles(
+        'practice',
+        topic,
+        practiceContent,
+        subjName,
+      );
       await this.practiceService.create({
         lessonId,
-        name: `${topic}-practice`,
+        path: practicePath,
       });
+      this.logger.log(`Practice created ${topic}`);
       // Homework
       const homeworkContent = await this.openAiService.getHomeworkContent(
         lessonContent,
         practiceContent,
       );
-      await createLessonFiles('homework', topic, homeworkContent, subjName);
+      const homeworkPath = await createLessonFiles(
+        'homework',
+        topic,
+        homeworkContent,
+        subjName,
+      );
+      await this.homeworkService.create({ path: homeworkPath, lessonId });
+      this.logger.log(`Homework created ${topic}`);
     }
   }
 }

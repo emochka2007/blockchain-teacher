@@ -35,10 +35,11 @@ model Lesson {
   lessonProgress LessonProgress[]
 }
 
+// todo refactor name => path
 model Practice {
   id         String   @id @default(uuid()) @db.Uuid
   lesson_id  String   @db.Uuid
-  name       String
+  path       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -51,7 +52,7 @@ model Practice {
 model Homework {
   id            String         @id @default(uuid()) @db.Uuid
   lesson_id     String         @db.Uuid
-  name          String
+  path          String
   created_at    DateTime       @default(now())
   updated_at    DateTime       @updatedAt
   lesson        Lesson         @relation(fields: [lesson_id], references: [id])

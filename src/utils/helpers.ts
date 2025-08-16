@@ -90,3 +90,7 @@ export const checkFileExists = async (path: string) => {
     return false;
   }
 };
+
+export const readFileContentAsync = async (path: string) => {
+  return await fs.promises.readFile(`${path}`, 'utf-8');
+};
