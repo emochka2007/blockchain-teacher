@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateSubjectDto,
   CreateSubjectWithExistingLecturesDto,
+  StartSubjectDto,
 } from './subject.dto';
 
 @Injectable()
@@ -50,5 +51,30 @@ export class SubjectService {
         name,
       },
     });
+  }
+
+  startSubject({ userId, subjectId }: StartSubjectDto) {
+    return this.prismaService.userSubjects.create({
+      data: {
+        user_id: userId,
+        subject_id: subjectId,
+      },
+    });
+  }
+
+  async checkIfSubjectStarted({
+    userId,
+    subjectId,
+  }: {
+    userId: string;
+    subjectId: string;
+  }) {
+    const userSubject = await this.prismaService.userSubjects.findFirst({
+      where: {
+        user_id: userId,
+        subject_id: subjectId,
+      },
+    });
+    return !!userSubject;
   }
 }

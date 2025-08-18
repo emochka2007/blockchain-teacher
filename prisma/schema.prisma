@@ -15,22 +15,24 @@ datasource db {
 
 model Subject {
   id         String   @id @default(uuid()) @db.Uuid
-  name       String @unique
+  name       String   @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   lessons Lesson[]
+  userSubjects UserSubjects[]
 }
 
 model Lesson {
-  id         String     @id @default(uuid()) @db.Uuid
-  subject_id String     @db.Uuid
-  topic      String @unique
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-  subject    Subject    @relation(fields: [subject_id], references: [id])
-  practices  Practice[]
-  homeworks  Homework[]
+  id           String     @id @default(uuid()) @db.Uuid
+  subject_id   String     @db.Uuid
+  topic        String     @unique
+  order_number Int        @db.Integer @default(0)
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  subject      Subject    @relation(fields: [subject_id], references: [id])
+  practices    Practice[]
+  homeworks    Homework[]
 
   lessonProgress LessonProgress[]
 }
@@ -65,13 +67,13 @@ model User {
   id         String   @id @default(uuid()) @db.Uuid
   username   String   @db.VarChar(255)
   role       String   @db.VarChar(100)
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   lessonProgress LessonProgress[]
   userHomeworks  UserHomework[]
   userPractices  UserPractice[]
+  userSubjects UserSubjects[]
 }
 
 model LessonProgress {
@@ -79,10 +81,10 @@ model LessonProgress {
   lesson_id String @db.Uuid
   progress  String @db.VarChar(16)
 
-  user   User   @relation(fields: [user_id], references: [id])
-  lesson Lesson @relation(fields: [lesson_id], references: [id])
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
+  user       User     @relation(fields: [user_id], references: [id])
+  lesson     Lesson   @relation(fields: [lesson_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@id([user_id, lesson_id])
   @@index([lesson_id])
@@ -90,33 +92,46 @@ model LessonProgress {
 }
 
 model UserHomework {
-  user_id  String @db.Uuid
-  task_id  String @db.Uuid
-  solution String? @db.Text
+  user_id  String   @db.Uuid
+  task_id  String   @db.Uuid
+  solution String?  @db.Text
   deadline DateTime
-  score Int? @db.Integer
+  score    Int?     @db.Integer
 
-  user     User     @relation(fields: [user_id], references: [id])
-  homework Homework @relation(fields: [task_id], references: [id])
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
+  user       User     @relation(fields: [user_id], references: [id])
+  homework   Homework @relation(fields: [task_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@id([user_id, task_id])
   @@index([user_id])
   @@index([task_id])
 }
 
-model UserPractice {
-  user_id  String @db.Uuid
-  task_id  String @db.Uuid
-  deadline DateTime
-  solution String? @db.Text
-  score Int? @db.Integer
+model UserSubjects {
+  user_id String @db.Uuid
+  subject_id String @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id])
+  subject   Subject @relation(fields: [subject_id], references: [id])
 
-  user     User     @relation(fields: [user_id], references: [id])
-  practice Practice @relation(fields: [task_id], references: [id])
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  @@id([user_id, subject_id])
+  @@index([user_id])
+  @@index([subject_id])
+}
+
+model UserPractice {
+  user_id  String   @db.Uuid
+  task_id  String   @db.Uuid
+  deadline DateTime
+  solution String?  @db.Text
+  score    Int?     @db.Integer
+
+  user       User     @relation(fields: [user_id], references: [id])
+  practice   Practice @relation(fields: [task_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@id([user_id, task_id])
   @@index([user_id])

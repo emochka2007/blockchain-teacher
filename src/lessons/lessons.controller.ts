@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
 import {
   CreateLessonDto,
+  FinishLessonDto,
   InitLessonsDto,
   StartLessonDto,
 } from './dto/create-lesson.dto';
@@ -26,7 +28,15 @@ export class LessonsController {
 
   @Post('start')
   start(@Body() createLessonDto: StartLessonDto) {
-    return this.lessonsService.startLesson(createLessonDto);
+    return this.lessonsService.startNextLesson(createLessonDto);
+  }
+
+  @Get('current')
+  getLessonForUser(
+    @Query('subjectId') subjectId: string,
+    @Query('userId') userId: string,
+  ) {
+    return this.lessonsService.findLessonForUser(subjectId, userId);
   }
 
   @Get('all')
@@ -52,5 +62,10 @@ export class LessonsController {
   @Post('init')
   initializeLessons(@Body() initLessonDto: InitLessonsDto) {
     return this.lessonsService.initializeLessons(initLessonDto);
+  }
+
+  @Post('finish')
+  finishLesson(@Body() dto: FinishLessonDto) {
+    return this.lessonsService.finishLesson(dto);
   }
 }

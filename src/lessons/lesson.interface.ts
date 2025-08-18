@@ -5,3 +5,8 @@ export type JoinedLessonEntity = {
   topic: string;
   subject: Subject;
 };
+
+export enum LESSON_STATUS {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}

@@ -1,6 +1,0 @@
-## Add your solution below
-- This number is irrational, because it cannot be presented as full number
-- they are used in circuit analysis
-- I cannot create a digram, so complex numbers are the biggest, then it goes real numbers, rational, irrational
-- This value is rational, cause it could be presented as a whole number
-
