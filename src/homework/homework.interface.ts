@@ -1,8 +1,14 @@
-export type JoinedHomeworkEntity = {
-  homeworkName: string;
+export type CheckHomeworkDto = {
+  solution: string;
+  homeworkContent: string;
+};
+
+export type CheckPracticeDto = {
+  userId: string;
   lessonName: string;
   subjectName: string;
-  solution: string;
+  practiceContent: string;
+  solutionContent: string;
 };
 
 export type Solution = {

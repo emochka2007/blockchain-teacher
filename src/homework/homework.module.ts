@@ -5,5 +5,6 @@ import { HomeworkController } from './homework.controller';
 @Module({
   controllers: [HomeworkController],
   providers: [HomeworkService],
+  exports: [HomeworkService],
 })
 export class HomeworkModule {}

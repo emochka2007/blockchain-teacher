@@ -6,15 +6,16 @@ import {
 } from './dto/create-homework.dto';
 import { UpdateHomeworkDto } from './dto/update-homework.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { createSolutionFile, readSolutionFromFile } from '../utils/helpers';
 
 @Injectable()
 export class HomeworkService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create({ name, lessonId }: CreateHomeworkDto) {
+  create({ path, lessonId }: CreateHomeworkDto) {
     return this.prismaService.homework.create({
       data: {
-        name,
+        path,
         lesson: {
           connect: { id: lessonId },
         },
@@ -41,13 +42,14 @@ export class HomeworkService {
     return `This action removes a #${id} homework`;
   }
 
-  startHomework({ userId, homeworkId, deadline }: StartHomeworkDto) {
+  async startHomework({ userId, homeworkId, deadline }: StartHomeworkDto) {
     const now = new Date();
     if (!deadline) {
       deadline = new Date(
         now.getTime() + 2 * 24 * 60 * 60 * 1000,
       ).toISOString();
     }
+    await createSolutionFile(userId, homeworkId);
     return this.prismaService.userHomework.create({
       data: {
         deadline: deadline,
@@ -61,7 +63,8 @@ export class HomeworkService {
     });
   }
 
-  submitSolution({ userId, homeworkId, solution }: SubmitHomeworkDto) {
+  async submitSolution({ userId, homeworkId }: SubmitHomeworkDto) {
+    const solution = await readSolutionFromFile(userId, homeworkId);
     return this.prismaService.userHomework.update({
       data: {
         solution,

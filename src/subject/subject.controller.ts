@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { SubjectService } from './subject.service';
-import { CreateSubjectDto } from './subject.dto';
+import { CreateSubjectDto, StartSubjectDto } from './subject.dto';
 
-@Controller('subject')
+@Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
@@ -14,5 +14,10 @@ export class SubjectController {
   @Get('all')
   getAllSubjects() {
     return this.subjectService.getSubjects();
+  }
+
+  @Post('start')
+  startLesson(@Body() dto: StartSubjectDto) {
+    return this.subjectService.startSubject(dto);
   }
 }

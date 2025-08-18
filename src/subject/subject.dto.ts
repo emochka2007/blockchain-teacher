@@ -20,3 +20,10 @@ export class CreateSubjectDto {
   @IsNotEmpty()
   name: string;
 }
+
+export class StartSubjectDto {
+  @IsUUID('4')
+  userId: string;
+  @IsUUID('4')
+  subjectId: string;
+}
